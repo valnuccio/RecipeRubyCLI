@@ -8,5 +8,6 @@
 #
 class UserIngredient < ActiveRecord::Base
 belongs_to :ingredient
-belongs_to :users
+belongs_to :user
+
 end

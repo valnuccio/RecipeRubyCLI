@@ -18,7 +18,6 @@
 - stretch - build out their pantry
 - boolean - shows if you are logged in and you have to log out at the end  
 
-
 ## Prompts with recipe of the day
 ## saves last five queries and shows most recently searched recipes
 
@@ -31,6 +30,7 @@
  - times
  - servings
  - how many items you already have
+ - wine pairing??
 
 
 mvp - core functionalities. solid
