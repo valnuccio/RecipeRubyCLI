@@ -16,10 +16,12 @@
      - have more time: also a message
 - create a recipe
 - stretch - build out their pantry
-  
+- boolean - shows if you are logged in and you have to log out at the end  
 
 
 ## Prompts with recipe of the day
+## saves last five queries and shows most recently searched recipes
+
 
 ## Recipe will have:
  - bonus: nutritional value

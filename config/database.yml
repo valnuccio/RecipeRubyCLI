@@ -1,0 +1,9 @@
+##telling our adapter what to talk to
+
+
+  development:
+  adapter: sqlite3
+  database: db/recipe_ruby.db 
+  pool: 5
+  timeout: 5000
+
