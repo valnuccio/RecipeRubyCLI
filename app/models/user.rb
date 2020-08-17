@@ -19,4 +19,11 @@ class User < ActiveRecord::Base
 
 
     
+
+    def sign_up
+        #passes info in
+        # we have to make sure user doesnt exist
+        #makes sure username isn't taken
+        User.create
+    end
 end
