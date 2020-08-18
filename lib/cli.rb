@@ -1,5 +1,8 @@
 
 
+
+
+
 class CLI
 
     attr_accessor :current_user
@@ -7,6 +10,7 @@ class CLI
     def start
         greeting
         @current_user = opening_prompt
+        welcome_nav_bar
         binding.pry
     end
     
@@ -28,17 +32,43 @@ class CLI
         #ascii for name
         #add fun food fact
         PROMPT.select("#{current_user.name}, what would you like to do?") do |menu|
-            menu.choice "Search for new recipes", -> { User.login }
-            menu.choice "Search for recipes by ingredients", -> { User.login }
-            menu.choice "Check out our pantry", -> { User.create(User.signup) }
-            menu.choice "View Recipe Book", -> { User.create(User.signup) }
-            menu.choice "Random Recipe Generator", -> { User.create(User.signup) }
-            menu.choice "Random Food Joke", -> { User.create(User.signup) }
+            menu.choice "Search for new recipes", -> { search }
+            menu.choice "Search for recipes by ingredients", -> { }
+            menu.choice "Check out our pantry", -> {  }
+            menu.choice "View Recipe Book", -> {  }
+            menu.choice "Random Recipe Generator", -> {  }
+            menu.choice "Random Food Joke", -> {  }
             menu.choice "Exit", -> { exit }
+        end
     end
 
+    def search(recipe)
+        
+        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=#{recipe}")
 
+        http = Net::HTTP.new(url.host, url.port)
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
+        request = Net::HTTP::Get.new(url)
+        request["x-rapidapi-host"] = HOST
+        request["x-rapidapi-key"] = KEY
+
+        response = http.request(request)
+        found_recipes = JSON.parse(response.read_body)
+        binding.pry
+         # returns 10 recipes
+        # choices = [found_recipes["results"][:title] ]
+        
+            # found_recipes["results"] enters into the array
+            # array keys/ answers include
+            # spoonacular - id    ADD COLUMN
+            # ready in minutes - integer (result may be nice to see)
+            # servings - integer
+            # source - url  ??? not sure what to do with that, added column to table?
+            # image = image.... see if that is part of url
+        
+    end
 
 
 

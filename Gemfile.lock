@@ -25,12 +25,16 @@ GEM
     colorize (0.8.1)
     concurrent-ruby (1.1.7)
     docopt (0.6.1)
+    dotenv (2.7.6)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
+    json (2.3.1)
     method_source (1.0.0)
     minitest (5.14.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
+    net-http (0.1.0)
+    openssl (2.2.0)
     pastel (0.8.0)
       tty-color (~> 0.5)
     pry (0.13.1)
@@ -80,6 +84,10 @@ DEPENDENCIES
   artii
   catpix
   colorize
+  dotenv
+  json
+  net-http
+  openssl
   pry
   require_all
   rmagick (= 2.16)

@@ -16,3 +16,7 @@ gem 'colorize'
 gem 'artii'
 gem 'catpix'
 gem 'uri'
+gem "openssl"
+gem "net-http"
+gem "json"
+gem "dotenv"
