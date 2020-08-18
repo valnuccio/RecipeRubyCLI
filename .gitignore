@@ -1,3 +1,4 @@
 /config/api.rb
 /config/api.env
 /config/.env
+/config/keys.rb

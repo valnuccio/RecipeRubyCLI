@@ -42,10 +42,7 @@ class CLI
         end
     end
 
-    def search(recipe)
-        
-        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=#{recipe}")
-
+    def api_stuff(url)        
         http = Net::HTTP.new(url.host, url.port)
         http.use_ssl = true
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -55,7 +52,15 @@ class CLI
         request["x-rapidapi-key"] = KEY
 
         response = http.request(request)
-        found_recipes = JSON.parse(response.read_body)
+        JSON.parse(response.read_body)
+    end
+
+
+    def search(recipe)
+        
+        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=#{recipe}")
+
+        found_recipes = api_stuff(url)
         binding.pry
          # returns 10 recipes
         # choices = [found_recipes["results"][:title] ]
@@ -70,7 +75,11 @@ class CLI
         
     end
 
+def search_ingredient(ingredient)
 
+
+
+end
 
 
     def greeting
