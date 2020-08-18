@@ -7,33 +7,33 @@ class CLI
 
     attr_accessor :current_user
     
-    def start
-        greeting
-        @current_user = opening_prompt
-        welcome_nav_bar
-        binding.pry
+    def self.start
+        self.greeting
+        @@current_user = self.opening_prompt
+        self.welcome_nav_bar
+        
     end
     
     
     
-    def opening_prompt
-        current_user = false
-        while !current_user
-            current_user = PROMPT.select("What would you like to do?") do |menu|
+    def self.opening_prompt
+        @@current_user = false
+        while !@@current_user
+            @@current_user = PROMPT.select("What would you like to do?") do |menu|
                 menu.choice "Login", -> { User.login }
                 menu.choice "Signup", -> { User.create(User.signup) }
                 menu.choice "Exit", -> { exit }
             end
         end
-        current_user
+        @@current_user
     end
 
-    def welcome_nav_bar
+    def self.welcome_nav_bar
         #ascii for name
         #add fun food fact
-        PROMPT.select("#{current_user.name}, what would you like to do?") do |menu|
-            menu.choice "Search for new recipes", -> { search }
-            menu.choice "Search for recipes by ingredients", -> { }
+        PROMPT.select("#{@@current_user.name}, what would you like to do?") do |menu|
+            menu.choice "Search for new recipes", -> { API.read_recipe(API.search) }
+            menu.choice "Search for recipes by ingredients", -> { API.read_recipe(API.search_ingredient)}
             menu.choice "Check out our pantry", -> {  }
             menu.choice "View Recipe Book", -> {  }
             menu.choice "Random Recipe Generator", -> {  }
@@ -42,47 +42,12 @@ class CLI
         end
     end
 
-    def api_stuff(url)        
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+   
 
-        request = Net::HTTP::Get.new(url)
-        request["x-rapidapi-host"] = HOST
-        request["x-rapidapi-key"] = KEY
-
-        response = http.request(request)
-        JSON.parse(response.read_body)
-    end
+   
 
 
-    def search(recipe)
-        
-        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=#{recipe}")
-
-        found_recipes = api_stuff(url)
-        binding.pry
-         # returns 10 recipes
-        # choices = [found_recipes["results"][:title] ]
-        
-            # found_recipes["results"] enters into the array
-            # array keys/ answers include
-            # spoonacular - id    ADD COLUMN
-            # ready in minutes - integer (result may be nice to see)
-            # servings - integer
-            # source - url  ??? not sure what to do with that, added column to table?
-            # image = image.... see if that is part of url
-        
-    end
-
-def search_ingredient(ingredient)
-
-
-
-end
-
-
-    def greeting
+    def self.greeting
         puts "
                                 ░██╗░░░░░░░██╗███████╗██╗░░░░░░█████╗░░█████╗░███╗░░░███╗███████╗  ████████╗░█████╗░
                                 ░██║░░██╗░░██║██╔════╝██║░░░░░██╔══██╗██╔══██╗████╗░████║██╔════╝  ╚══██╔══╝██╔══██╗

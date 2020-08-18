@@ -38,8 +38,7 @@ class User < ActiveRecord::Base
             puts "#{username} not found"
             return false
         end
-        puts "Welcome #{username}"
-        
+        return logged_in_user
     end
 
     def self.signup
