@@ -18,12 +18,48 @@ class User < ActiveRecord::Base
     has_many :recipes, through: :user_recipes
 
 
-    
-
-    def sign_up
-        #passes info in
-        # we have to make sure user doesnt exist
-        #makes sure username isn't taken
-        User.create
+    def self.login
+        username = PROMPT.ask("Enter your Username >> ")
+        logged_in_user = User.find_by(username: username)
+        if logged_in_user
+            entered_password = PROMPT.mask("Please enter your password >> ")
+            fails = 0
+            while entered_password != logged_in_user.password
+                puts "Your passwords did not match".red.bold
+                puts "Please try again".blue
+                entered_password = PROMPT.mask("Please enter your password >> ")
+                fails +=1
+                if fails == 3
+                    puts "Please make an account, or contact customer support for help resetting your password"
+                    return false
+                end
+            end
+        else
+            puts "#{username} not found"
+            return false
+        end
+        puts "Welcome #{username}"
+        
     end
+
+    def self.signup
+            
+        PROMPT.collect do
+            key(:username).ask("Username >> ")
+
+            first_try = key(:password).mask("Password >> ")
+            second_try = PROMPT.mask("Re-enter password >> ")
+            while first_try != second_try
+                puts "Your passwords did not match".red.bold
+                puts "Please try again".blue
+                first_try = key(:password).mask("Password >> ")
+                second_try = PROMPT.mask("Re-enter password >> ")
+            end
+            key(:name).ask("Name >> ")
+            key(:location).ask("Location >> ")
+        end
+    end
+
+
+    
 end

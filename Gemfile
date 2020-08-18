@@ -10,3 +10,9 @@ gem "require_all"
 
 gem "annotate"
 
+gem 'rmagick', '2.16'
+gem 'tty-prompt'
+gem 'colorize'
+gem 'artii'
+gem 'catpix'
+gem 'uri'
