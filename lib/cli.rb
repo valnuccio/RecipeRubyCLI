@@ -8,7 +8,7 @@ class CLI
     attr_accessor :current_user
     
     def self.start
-        self.greeting
+        self.nav_bar_greeting
         @@current_user = self.opening_prompt
         self.welcome_nav_bar
         
@@ -32,8 +32,8 @@ class CLI
         #ascii for name
         #add fun food fact
         PROMPT.select("#{@@current_user.name}, what would you like to do?") do |menu|
-            menu.choice "Search for new recipes", -> { API.read_recipe(API.search) }
-            menu.choice "Search for recipes by ingredients", -> { API.read_recipe(API.search_ingredient)}
+            menu.choice "Search for new recipes", -> { read_recipe(API.search) }
+            menu.choice "Search for recipes by ingredients", -> { read_recipe(API.search_ingredient)}
             menu.choice "Check out our pantry", -> {  }
             menu.choice "View Recipe Book", -> {  }
             menu.choice "Random Recipe Generator", -> {  }
@@ -42,7 +42,55 @@ class CLI
         end
     end
 
-   
+
+
+
+    def self.read_recipe(recipe)
+        #(recipe passed in is the format received from JSON)
+        title = recipe['title']
+        time = recipe['readyInMinutes']
+        servings = recipe['servings']
+        summary = Nokogiri::HTML::Document.parse(recipe["summary"]).text
+        photo_url = recipe['image']
+        recipe_spoonacular_id = recipe['id']
+        directions = recipe['analyzedInstructions'][0]['steps']
+        
+        # Image.new(photo_url)
+        puts title.red  #ASCII HERE
+        puts summary.green
+        puts
+        puts "Ready in " + "#{time}".red
+        puts "Servings " + "#{servings}".red
+        puts
+        ###INGREDIENTS 
+        recipe["extendedIngredients"].each do |ele| 
+            #### ADD INGREDIENT SPOONACULAR ID
+            #### current_ingredient = Ingredient.find_or_create_by(spoonacular_id: ele["id"], name: SOMETHING )
+            #### IngredientRecipe.find_or_create_by(ingredient_id: current_ingredient.id, recipe_id: current_recipe.id)
+            puts ele["originalString"].light_cyan
+
+        end
+
+        ## Add Summary? TO RECIPES TABLE
+        ### EASY WAY
+        # attempt["instructions"]
+
+        ### LETS MAKE THIS DIFFICULT
+        
+        ### Recipe.update(directions: steps)
+        directions.each do |step|
+            puts "Step #{step['number']}.".blue
+            puts "     #{step['step']}".yellow
+        end
+        ### NUTRITION FACTS API CALL
+        ###PRICE BREAKDOWN (url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/1003464/priceBreakdownWidget.json"))
+        nil
+
+        #### SAVE RECIPE ?!?!?!?!!? UPDATE RECIPE INFO AS WE GO
+
+        ### SAVED RECIPE DIFFERENT FUNCTION?!?!?!?!
+
+    end
 
    
 
@@ -69,10 +117,70 @@ class CLI
 
 
 
+
+
+def self.nav_bar_greeting
+#     print"
+#     __...--~~~~~-._   _.-~~~~~--...__
+#     //               `V'               \\ 
+#    //                 |                 \\ 
+#   //__...--~~~~~~-._  |  _.-~~~~~~--...__\\ 
+#  //__.....----~~~~._\ | /_.~~~~----.....__\\
+# ====================\\|//====================
+#                     `---`                       "
+puts"                      ██████                                  
+                    ████░░▒▒░░██                                
+                ████▒▒░░▒▒▒▒▒▒▒▒██                              
+              ▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                            
+            ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                            
+            ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                          
+          ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                          
+          ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██                          
+        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██      ████                
+        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██  ████▒▒██  ████          
+        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒████▒▒▒▒██  ██▒▒██          
+        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██░░▒▒▒▒██  ██░░▒▒██          
+        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██▒▒▒▒▒▒██  ██▒▒▒▒██  ████      
+        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░██░░▒▒▒▒██  ██▒▒▒▒██  ██▒▒██      
+        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██▒▒▒▒▒▒██  ██▒▒▒▒██  ▓▓▒▒▒▒██      
+        ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██▒▒▒▒██  ██▒▒▒▒██  ██░░▒▒██        
+          ██▒▒▒▒▒▒▒▒▒▒▒▒░░▓▓▒▒▒▒▒▒██▓▓▒▒▒▒██  ▓▓░░▒▒▒▒██        
+          ██▒▒▒▒▒▒▒▒▒▒░░▓▓▓▓▒▒▒▒▒▒▒▒▒▒░░██  ██░░▒▒▒▒██          
+          ██▒▒▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒██▓▓░░▒▒▒▒▒▒██          
+          ██▒▒▒▒▒▒▒▒██  ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒▒▒▒▒██            
+          ██▒▒▒▒▒▒██    ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██              
+        ██▒▒▒▒▒▒██    ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒████                
+        ██▒▒▒▒██      ██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓██                    
+        ██▒▒██      ██▒▒▒▒▒▒▒▒▒▒▒▒██████                        
+      ▓▓▒▒▒▒██    ▓▓▒▒▒▒▒▒▒▒▓▓████    ░░                        
+      ██▒▒██    ██▒▒▒▒▒▒████                                    
+      ██▒▒██  ▓▓▒▒▒▒▒▒██░░                                      
+    ██▒▒▒▒████▒▒▒▒▒▒██       ░██╗░░░░░░░██╗███████╗██╗░░░░░░█████╗░░█████╗░███╗░░░███╗███████╗  ████████╗░█████╗░
+    ▓▓▒▒▒▒██▒▒▒▒▒▒██░░       ░██║░░██╗░░██║██╔════╝██║░░░░░██╔══██╗██╔══██╗████╗░████║██╔════╝  ╚══██╔══╝██╔══██╗                                   
+  ▓▓░░▒▒██▒▒▒▒▒▒██           ░╚██╗████╗██╔╝█████╗░░██║░░░░░██║░░╚═╝██║░░██║██╔████╔██║█████╗░░  ░░░██║░░░██║░░██║                                   
+  ██▒▒██▒▒▒▒▒▒██             ░░████╔═████║░██╔══╝░░██║░░░░░██║░░██╗██║░░██║██║╚██╔╝██║██╔══╝░░  ░░░██║░░░██║░░██║                                   
+██▒▒██▒▒▒▒▒▒██               ░░╚██╔╝░╚██╔╝░███████╗███████╗╚█████╔╝╚█████╔╝██║░╚═╝░██║███████╗  ░░░██║░░░╚█████╔╝                                   
+██▓▓▒▒▒▒▒▒██                 ░░░╚═╝░░░╚═╝░░╚══════╝╚══════╝░╚════╝░░╚════╝░╚═╝░░░░░╚═╝╚══════╝  ░░░╚═╝░░░░╚════╝░                                  
+████▒▒▒▒▒▒██                                                      
+██▒▒▒▒▒▒██                   ██████╗░███████╗░█████╗░██╗██████╗░███████╗  ██████╗░██╗░░░██╗██████╗░██╗░░░██╗                                     
+██▒▒▒▒▒▒██                   ██╔══██╗██╔════╝██╔══██╗██║██╔══██╗██╔════╝  ██╔══██╗██║░░░██║██╔══██╗╚██╗░██╔╝                                       
+██▒▒▒▒▒▒██                   ██████╔╝█████╗░░██║░░╚═╝██║██████╔╝█████╗░░  ██████╔╝██║░░░██║██████╦╝░╚████╔╝░                                         
+████▒▒▒▒▒▒████               ██╔══██╗██╔══╝░░██║░░██╗██║██╔═══╝░██╔══╝░░  ██╔══██╗██║░░░██║██╔══██╗░░╚██╔╝░░                                             
+██▒▒▒▒▒▒▒▒██▒▒██             ██║░░██║███████╗╚█████╔╝██║██║░░░░░███████╗  ██║░░██║╚██████╔╝██████╦╝░░░██║░░░                                               
+▒▒██▒▒▒▒▒▒▒▒▒▒████           ╚═╝░░╚═╝╚══════╝░╚════╝░╚═╝╚═╝░░░░░╚══════╝  ╚═╝░░╚═╝░╚═════╝░╚═════╝░░░░╚═╝░░░®                                                   
+▓▓▒▒▒▒▒▒▒▒▒▒▒▒██▒▒██                                                              
+▓▓▒▒▒▒▒▒▒▒▒▒▒▒██▒▒▒▒██                                                              
+██▒▒▒▒▒▒▒▒▒▒▒▒██▒▒▒▒██                                                                
+██▒▒▒▒▒▒▒▒▒▒██▒▒▒▒▒▒██                                                                
+██▒▒▒▒▒▒██▒▒▒▒▒▒▒▒██                                                                
+██▒▒▒▒▒▒██▒▒▒▒▒▒██                                                                  
+██████▒▒▒▒▒▒▒▒██                                                                  
+██████████                                                                    
+░░░░                                                        ░░                              
+░░░░░░░░░░░░░░░░░░                                                                          
+".red
 end
-
-
-
+end
 # class CLI
 
 #     def start

@@ -22,9 +22,7 @@ class API
         {">>> #{choice['title'].red}  Ready: in #{choice['readyInMinutes']}": choice["id"] }}
 
         get_recipe_id = PROMPT.select("What looks good?", choices, per_page:10)
-        
-        binding.pry
-        
+        self.read_recipe(get_recipe_id)
     end
 
     def self.search_ingredient
@@ -34,14 +32,12 @@ class API
         choices = found_recipes.map {|choice| 
         {">>> #{choice['title'].red}": choice["id"] }}
         get_recipe_id = PROMPT.select("What looks good? Displaying Top 5 Recipes w/ #{ingredient}", choices, per_page:5)
+        self.read_recipe(get_recipe_id)
     end
 
-    def self.read_recipe(spoonacular_id)
-        Recipe.create
-
-        # find or create by recipe
-        # we have to build in the escape here
-        # find or create by ingredients in that recipe
+    def self.read_recipe(recipe_id)   
+        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/#{recipe_id}/information")
+        self.api_call(url)
     end
 
 end

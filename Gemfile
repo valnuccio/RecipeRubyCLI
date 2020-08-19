@@ -20,3 +20,4 @@ gem "openssl"
 gem "net-http"
 gem "json"
 gem "dotenv"
+gem 'nokogiri'
