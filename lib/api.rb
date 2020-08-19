@@ -32,10 +32,11 @@ class API
         choices = found_recipes.map {|choice| 
         {">>> #{choice['title'].red}": choice["id"] }}
         get_recipe_id = PROMPT.select("What looks good? Displaying Top 5 Recipes w/ #{ingredient}", choices, per_page:5)
+        # self.read_recipe(get_recipe_id)
         self.read_recipe(get_recipe_id)
     end
 
-    def self.read_recipe(recipe_id)  
+    def self.read_recipe(recipe_id)  # GET RECIPE INFO
         system "clear"
         url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/#{recipe_id}/information")
         self.api_call(url)
@@ -61,6 +62,12 @@ class API
     def self.joke
         url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/jokes/random")
         self.api_call(url)["text"]
+    end
+
+    def self.random_recipe
+        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/random?number=1")
+        food_outer_hash = self.api_call(url)
+        food_outer_hash["recipes"][0]
     end
 
     def self.fact

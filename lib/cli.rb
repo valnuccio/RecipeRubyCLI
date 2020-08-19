@@ -36,13 +36,13 @@ class CLI
     def self.welcome_nav_bar
         #ascii for name
         #add fun food fact
-        PROMPT.select("#{@@current_user.name}, what would you like to do?") do |menu|
+        PROMPT.select("#{@@current_user.name}, what would you like to do?", per_page: 7) do |menu|
             menu.choice "Search for new recipes", -> { read_recipe(API.search) }
             menu.choice "Search for recipes by ingredients", -> { read_recipe(API.search_ingredient)}
             menu.choice "Check out our pantry", -> {  }
             menu.choice "View Recipe Book", -> {  }
-            menu.choice "Random Recipe Generator", -> {  }
-            menu.choice "Random Food Joke", -> {  }
+            menu.choice "Random Recipe Generator", -> {read_recipe(API.random_recipe)}
+            menu.choice "Random Food Joke", -> { API.joke }
             menu.choice "Exit", -> { exit }
         end
     end

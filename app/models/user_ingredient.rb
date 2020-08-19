@@ -7,10 +7,12 @@
 #  ingredient_id :integer
 #
 class UserIngredient < ActiveRecord::Base
-belongs_to :ingredient
-belongs_to :user
+    belongs_to :ingredient
+    belongs_to :user
 
+    def self.create_pantry
 
+    end
 
 
 

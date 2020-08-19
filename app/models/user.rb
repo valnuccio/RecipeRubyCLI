@@ -59,6 +59,17 @@ class User < ActiveRecord::Base
         end
     end
 
+    def self.pantry
+        if self.user_ingredients.nil?
+            if PROMPT.yes?("Would you like to create a pantry?")
+                UserIngredient.create_pantry
+            else
+                return CLI.welcome_nav_bar
+            end
+        else
+
+        end
+    end
 
     
 end
