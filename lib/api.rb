@@ -35,9 +35,37 @@ class API
         self.read_recipe(get_recipe_id)
     end
 
-    def self.read_recipe(recipe_id)   
+    def self.read_recipe(recipe_id)  
+        system "clear"
         url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/#{recipe_id}/information")
         self.api_call(url)
+    end
+
+
+    def self.get_recipe_price(recipe_id)
+        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/#{recipe_id}/priceBreakdownWidget.json")
+        cost_info = self.api_call(url)
+        (cost_info["totalCostPerServing"]*(0.01)).round(2)
+    end
+
+    def self.get_recipe_nutrition_facts(recipe_id)
+        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/#{recipe_id}/nutritionWidget.json")
+        facts = self.api_call(url)
+        calories = facts["calories"]
+        carbs = facts["carbs"]
+        fat = facts["fat"]
+        protein = facts["protein"]
+        all_info="\n    Calories: #{calories} \n    Carbs: #{carbs} \n    Fat: #{fat} \n     Protein: #{protein}"
+    end
+
+    def self.joke
+        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/jokes/random")
+        self.api_call(url)["text"]
+    end
+
+    def self.fact
+        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/trivia/random")
+        self.api_call(url)["text"]
     end
 
 end

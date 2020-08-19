@@ -7,8 +7,8 @@ class Image
 
     def print
         Catpix::print_image './image.png',
-            :limit_x => 0.45,
-            :limit_y => 0.45,
+            :limit_x => 0.2,
+            :limit_y => 0.2,
             :center_x => true,
             :resolution => "high"
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_18_185906) do
+ActiveRecord::Schema.define(version: 2020_08_19_154633) do
 
   create_table "ingredient_recipes", force: :cascade do |t|
     t.integer "ingredient_id"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 2020_08_18_185906) do
 
   create_table "ingredients", force: :cascade do |t|
     t.string "name"
+    t.integer "spoonacular_ingredient_id"
   end
 
   create_table "recipes", force: :cascade do |t|
@@ -30,6 +31,8 @@ ActiveRecord::Schema.define(version: 2020_08_18_185906) do
     t.string "nutrition_facts"
     t.float "price"
     t.integer "spoonacular_id"
+    t.text "summary"
+    t.json "info_json"
   end
 
   create_table "user_ingredients", force: :cascade do |t|

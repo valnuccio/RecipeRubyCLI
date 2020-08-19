@@ -4,11 +4,11 @@
  
 
 ## A User can
-- core: create an account and/or login
-    - name, username, location
-- core:find a recipe by name
-- core : find a recipe by ingredients
-     - stretch: terminal will return top five recipes with that ingredient. 
+<!-- - core: create an account and/or login
+    - name, username, location -->
+<!-- - core:find a recipe by name -->
+<!-- - core : find a recipe by ingredients -->
+     <!-- - stretch: terminal will return top five recipes with that ingredient.  -->
      - stretch - search will tell you how many of the ingredients you already have
 - core: can save a recipe
 - core :can rate a recipe
@@ -23,14 +23,14 @@
 
 
 ## Recipe will have:
- - bonus: nutritional value
+ <!-- - bonus: nutritional value
  - photo
  - bonus: price value
- - rating
+ - rating -->
  - times
- - servings
- - how many items you already have
- - wine pairing??
+ <!-- - servings
+ - how many items you already have -->
+ <!-- - wine pairing?? -->
 
 
 mvp - core functionalities. solid

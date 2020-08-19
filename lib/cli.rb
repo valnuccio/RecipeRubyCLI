@@ -8,6 +8,7 @@ class CLI
     attr_accessor :current_user
     
     def self.start
+        system "clear"
         self.nav_bar_greeting
         @@current_user = self.opening_prompt
         self.welcome_nav_bar
@@ -53,41 +54,55 @@ class CLI
         summary = Nokogiri::HTML::Document.parse(recipe["summary"]).text
         photo_url = recipe['image']
         recipe_spoonacular_id = recipe['id']
+        nutrition_facts = API.get_recipe_nutrition_facts(recipe_spoonacular_id)
+        price = API.get_recipe_price(recipe_spoonacular_id)
         directions = recipe['analyzedInstructions'][0]['steps']
         
-        # Image.new(photo_url)
+        current_recipe = Recipe.find_or_create_by(spoonacular_id: recipe_spoonacular_id)
+        
+        current_recipe.update(title: title,
+                        minutes_to_make: time,
+                        servings: servings,
+                        summary: summary,
+                        photo_url: photo_url,
+                        price: price,
+                        directions: directions,
+                        nutrition_facts: nutrition_facts,
+                        info_json: recipe)
+        
+
+        Image.new(photo_url)
         puts title.red  #ASCII HERE
         puts summary.green
         puts
         puts "Ready in " + "#{time}".red
         puts "Servings " + "#{servings}".red
+        puts "Price per Serving " + "#{price}".red
         puts
-        ###INGREDIENTS 
+        puts "Nutrition Facts: #{nutrition_facts.red}"
+        puts
+       
         recipe["extendedIngredients"].each do |ele| 
-            #### ADD INGREDIENT SPOONACULAR ID
-            #### current_ingredient = Ingredient.find_or_create_by(spoonacular_id: ele["id"], name: SOMETHING )
-            #### IngredientRecipe.find_or_create_by(ingredient_id: current_ingredient.id, recipe_id: current_recipe.id)
-            puts ele["originalString"].light_cyan
-
+                current_ingredient = Ingredient.find_or_create_by(spoonacular_ingredient_id: ele["id"], name: ele["name"])
+                IngredientRecipe.find_or_create_by(ingredient_id: spoonacular_ingredient_id.id, recipe_id: current_recipe.spoonacular_id)
+                puts ele["originalString"].light_cyan
         end
-
-        ## Add Summary? TO RECIPES TABLE
-        ### EASY WAY
-        # attempt["instructions"]
-
-        ### LETS MAKE THIS DIFFICULT
         
-        ### Recipe.update(directions: steps)
+        binding.pry
+        
         directions.each do |step|
             puts "Step #{step['number']}.".blue
             puts "     #{step['step']}".yellow
         end
-        ### NUTRITION FACTS API CALL
-        ###PRICE BREAKDOWN (url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/1003464/priceBreakdownWidget.json"))
-        nil
+        
+        
+        PROMPT.select("What would you like to do next?") do |menu|
+            menu.choice "Save this to My Recipe Book", -> {puts "saved?"}#save it
+            menu.choice "Return to Navigation Bar", -> {puts "banana bread" } # nav bar
+            menu.choice "Exit", -> { exit }
+        end
 
-        #### SAVE RECIPE ?!?!?!?!!? UPDATE RECIPE INFO AS WE GO
-
+        
         ### SAVED RECIPE DIFFERENT FUNCTION?!?!?!?!
 
     end
