@@ -7,6 +7,10 @@ class CLI
 
     attr_accessor :current_user
     
+    def self.current_user
+        @@current_user
+    end
+
     def self.start
         system "clear"
         self.nav_bar_greeting
@@ -84,11 +88,11 @@ class CLI
        
         recipe["extendedIngredients"].each do |ele| 
                 current_ingredient = Ingredient.find_or_create_by(spoonacular_ingredient_id: ele["id"], name: ele["name"])
-                IngredientRecipe.find_or_create_by(ingredient_id: spoonacular_ingredient_id.id, recipe_id: current_recipe.spoonacular_id)
+                IngredientRecipe.find_or_create_by(ingredient_id: ele["id"], recipe_id: current_recipe.spoonacular_id)
                 puts ele["originalString"].light_cyan
         end
         
-        binding.pry
+        # binding.pry
         
         directions.each do |step|
             puts "Step #{step['number']}.".blue
@@ -97,8 +101,8 @@ class CLI
         
         
         PROMPT.select("What would you like to do next?") do |menu|
-            menu.choice "Save this to My Recipe Book", -> {puts "saved?"}#save it
-            menu.choice "Return to Navigation Bar", -> {puts "banana bread" } # nav bar
+            menu.choice "Save this to My Recipe Book", -> {UserRecipe.save_and_rate(current_recipe)}#save it
+            menu.choice "Return to Navigation Bar", -> {CLI.welcome_nav_bar} # nav bar
             menu.choice "Exit", -> { exit }
         end
 
