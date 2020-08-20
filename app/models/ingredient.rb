@@ -12,14 +12,5 @@ class Ingredient < ActiveRecord::Base
     has_many :recipes, through: :ingredient_recipes
     has_many :users, through: :user_ingredients
 
-#flour
-#salt
-#black pepper
-#rice
-#pasta
-#tomato sauce
-#
- 
-
 
 end

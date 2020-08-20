@@ -54,66 +54,76 @@ class CLI
         #(recipe passed in is the format received from JSON)
         ## MAYBE FIX WITH A BEGIN AND RESCUE!!!!!!
         begin
-        title = recipe['title']
-        time = recipe['readyInMinutes']
-        servings = recipe['servings']
-        summary = Nokogiri::HTML::Document.parse(recipe["summary"]).text
-        photo_url = recipe['image']
-        recipe_spoonacular_id = recipe['id']
-        nutrition_facts = API.get_recipe_nutrition_facts(recipe_spoonacular_id)
-        price = API.get_recipe_price(recipe_spoonacular_id)
-        directions = recipe['analyzedInstructions'][0]['steps']
-        
-        current_recipe = Recipe.find_or_create_by(spoonacular_id: recipe_spoonacular_id)
-        
-        current_recipe.update(title: title,
-                        minutes_to_make: time,
-                        servings: servings,
-                        summary: summary,
-                        photo_url: photo_url,
-                        price: price,
-                        directions: directions,
-                        nutrition_facts: nutrition_facts,
-                        info_json: recipe)
-        
+            title = recipe['title']
+            time = recipe['readyInMinutes']
+            servings = recipe['servings']
+            summary = Nokogiri::HTML::Document.parse(recipe["summary"]).text
+            photo_url = recipe['image']
+            recipe_spoonacular_id = recipe['id']
+            nutrition_facts = API.get_recipe_nutrition_facts(recipe_spoonacular_id)
+            price = API.get_recipe_price(recipe_spoonacular_id)
+            directions = recipe['analyzedInstructions'][0]['steps']
+            
+            current_recipe = Recipe.find_or_create_by(spoonacular_id: recipe_spoonacular_id)
+            
+            current_recipe.update(title: title,
+                            minutes_to_make: time,
+                            servings: servings,
+                            summary: summary,
+                            photo_url: photo_url,
+                            price: price,
+                            directions: directions,
+                            nutrition_facts: nutrition_facts,
+                            info_json: recipe)
+            
 
-        Image.new(photo_url)
-        puts title.red  #ASCII HERE
-        puts summary.green
-        puts
-        puts "Ready in " + "#{time}".red
-        puts "Servings " + "#{servings}".red
-        puts "Price per Serving " + "#{price}".red
-        puts
-        puts "Nutrition Facts: #{nutrition_facts.red}"
-        puts
-       
-        recipe["extendedIngredients"].each do |ele| 
-                current_ingredient = Ingredient.find_or_create_by(spoonacular_ingredient_id: ele["id"])
-                current_ingredient.update(name: ele["name"])
-                IngredientRecipe.find_or_create_by(ingredient_id: ele["id"], recipe_id: current_recipe.spoonacular_id)
-                puts ele["originalString"].light_cyan
+            Image.new(photo_url)
+            puts title.red  #ASCII HERE
+            puts summary.green
+            puts
+            puts "Ready in " + "#{time}".red
+            puts "Servings " + "#{servings}".red
+            puts "Price per Serving " + "#{price}".red
+            puts
+            puts "Nutrition Facts: #{nutrition_facts.red}"
+            puts
+            puts "Ingredient List: (" + "WHITE".white + " means we have it " + "LIGHT BLUE".light_cyan + " means you have grocery shopping to do)"
+            puts
+            needs = []
+            recipe["extendedIngredients"].each do |ele| 
+                    current_ingredient = Ingredient.find_or_create_by(spoonacular_ingredient_id: ele["id"])
+                    current_ingredient.update(name: ele["name"])
+                    IngredientRecipe.find_or_create_by(ingredient_id: ele["id"], recipe_id: current_recipe.spoonacular_id)
+            
+                    if UserIngredient.find_by(user_id: CLI.current_user.id, ingredient_id: ele["id"])
+                        puts ele["originalString"].white
+                    else
+                        puts ele["originalString"].light_cyan
+                        needs << ele["name"]
+                    end
+            end
+            
+            
+            
+            directions.each do |step|
+                puts "Step #{step['number']}.".blue
+                puts "     #{step['step']}".yellow
+            end
+            puts "You need to go buy: " + needs.join(", ").light_cyan.bold + "."
+            puts
+            puts
+            PROMPT.select("What would you like to do next?") do |menu|
+                menu.choice "Save this to My Recipe Book", -> {UserRecipe.save_and_rate(current_recipe)}#save it
+                menu.choice "Return to Navigation Bar", -> {CLI.welcome_nav_bar} # nav bar
+                menu.choice "Exit", -> { exit }
+            end
+        rescue
+            puts "Something went wrong, returning to main menu".white.on_red
+            sleep(2)
+            return self.welcome_nav_bar
+            ### SAVED RECIPE DIFFERENT FUNCTION?!?!?!?!
         end
-        
-        # binding.pry
-        
-        directions.each do |step|
-            puts "Step #{step['number']}.".blue
-            puts "     #{step['step']}".yellow
-        end
-        
-        
-        PROMPT.select("What would you like to do next?") do |menu|
-            menu.choice "Save this to My Recipe Book", -> {UserRecipe.save_and_rate(current_recipe)}#save it
-            menu.choice "Return to Navigation Bar", -> {CLI.welcome_nav_bar} # nav bar
-            menu.choice "Exit", -> { exit }
-        end
-    rescue
-        puts "Something went wrong, returning to main menu".white.on_red
-        sleep(2)
-        return self.welcome_nav_bar
-        ### SAVED RECIPE DIFFERENT FUNCTION?!?!?!?!
-    end
+
     end
 
    
