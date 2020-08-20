@@ -39,7 +39,7 @@ class CLI
         PROMPT.select("#{@@current_user.name}, what would you like to do?", per_page: 7) do |menu|
             menu.choice "Search for new recipes", -> { read_recipe(API.search) }
             menu.choice "Search for recipes by ingredients", -> { read_recipe(API.search_ingredient)}
-            menu.choice "Check out our pantry", -> {  }
+            menu.choice "Check out our pantry", -> { User.pantry  }
             menu.choice "View Recipe Book", -> {  }
             menu.choice "Random Recipe Generator", -> {read_recipe(API.random_recipe)}
             menu.choice "Random Food Joke", -> { API.joke }
@@ -52,6 +52,8 @@ class CLI
 
     def self.read_recipe(recipe)
         #(recipe passed in is the format received from JSON)
+        ## MAYBE FIX WITH A BEGIN AND RESCUE!!!!!!
+        begin
         title = recipe['title']
         time = recipe['readyInMinutes']
         servings = recipe['servings']
@@ -87,7 +89,8 @@ class CLI
         puts
        
         recipe["extendedIngredients"].each do |ele| 
-                current_ingredient = Ingredient.find_or_create_by(spoonacular_ingredient_id: ele["id"], name: ele["name"])
+                current_ingredient = Ingredient.find_or_create_by(spoonacular_ingredient_id: ele["id"])
+                current_ingredient.update(name: ele["name"])
                 IngredientRecipe.find_or_create_by(ingredient_id: ele["id"], recipe_id: current_recipe.spoonacular_id)
                 puts ele["originalString"].light_cyan
         end
@@ -105,10 +108,12 @@ class CLI
             menu.choice "Return to Navigation Bar", -> {CLI.welcome_nav_bar} # nav bar
             menu.choice "Exit", -> { exit }
         end
-
-        
+    rescue
+        puts "Something went wrong, returning to main menu".white.on_red
+        sleep(2)
+        return self.welcome_nav_bar
         ### SAVED RECIPE DIFFERENT FUNCTION?!?!?!?!
-
+    end
     end
 
    

@@ -60,7 +60,7 @@ class User < ActiveRecord::Base
     end
 
     def self.pantry
-        if self.user_ingredients.nil?
+        if CLI.current_user.user_ingredients.length == 0
             if PROMPT.yes?("Would you like to create a pantry?")
                 UserIngredient.create_pantry
             else
