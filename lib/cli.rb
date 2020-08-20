@@ -12,10 +12,9 @@ class CLI
     end
 
     def self.play_music
-        pid = fork {exec 'afplay', "lib/GBBO.mp3"}
+        pid = fork {exec 'afplay', "lib/GBBO_3.mp3"}
     end
 
-    # pid = fork{ system 'killall', 'afplay' }
     
     def self.start
         system "clear"
@@ -25,17 +24,22 @@ class CLI
         
     end
     
-    
+    def self.exit_and_kill_music
+    pid = fork{ system 'killall', 'afplay' }
+    sleep(0.5)
+    exit
+    end
+
     
     def self.opening_prompt
-        # exit_music=fork{ system 'killall', 'afplay' }
+        
         @@current_user = false
-        # self.play_music
+        self.play_music
         while !@@current_user
             @@current_user = PROMPT.select("What would you like to do?") do |menu|
                 menu.choice "Login", -> { User.login }
                 menu.choice "Signup", -> { User.create(User.signup) }
-                menu.choice "Exit", -> { exit }
+                menu.choice "Exit", -> {self.exit_and_kill_music}
                 
             end
         end
@@ -71,7 +75,7 @@ class CLI
             menu.choice "View Recipe Book", -> {UserRecipe.view_recipe_book}
             menu.choice "Random Recipe Generator", -> {read_recipe(API.random_recipe)}
             menu.choice "Random Food Joke", -> { API.joke }
-            menu.choice "Exit", -> { exit }
+            menu.choice "Exit", -> {self.exit_and_kill_music}
         end
     end
 
@@ -153,7 +157,7 @@ class CLI
             PROMPT.select("What would you like to do next?") do |menu|
                 menu.choice "Save this to My Recipe Book", -> {UserRecipe.save_and_rate(current_recipe)}#save it
                 menu.choice "Return to Navigation Bar", -> {CLI.welcome_nav_bar} # nav bar
-                menu.choice "Exit", -> { exit }
+                menu.choice "Exit", -> {self.exit_and_kill_music}
             end
         rescue
             puts "Something went wrong, returning to main menu".white.on_red
