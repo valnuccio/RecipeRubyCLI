@@ -18,7 +18,7 @@ class UserIngredient < ActiveRecord::Base
             menu.choice "Choose items from my pantry to search for a recipe", -> { self.multi_search}
             menu.choice "View my pantry", -> {self.view_pantry}
             menu.choice "Return to Main Menu", -> {CLI.welcome_nav_bar}
-            menu.choice "Exit", -> {exit}
+            menu.choice "Exit", -> {CLI.exit_and_kill_music}
         end
     end
 
@@ -112,6 +112,7 @@ class UserIngredient < ActiveRecord::Base
         self.pantry_menu
     end
     
+   
 end
         
     

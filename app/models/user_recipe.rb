@@ -85,7 +85,7 @@ class UserRecipe < ActiveRecord::Base
         PROMPT.select("What would you like to do now?") do |menu|
             menu.choice "See my Saved Recipes again", -> {view_recipe_book}
             menu.choice "Return to Main Menu", -> {CLI.welcome_nav_bar}
-            menu.choice "Exit", -> {exit}
+            menu.choice "Exit", -> {CLI.exit_and_kill_music}
         end
        
     end

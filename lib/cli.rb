@@ -12,8 +12,10 @@ class CLI
     end
 
     def self.play_music
-        pid = fork {exec 'afplay', "lib/GBBO_two_min.mp3"}
+        pid = fork {exec 'afplay', "lib/GBBO.mp3"}
     end
+
+    # pid = fork{ system 'killall', 'afplay' }
     
     def self.start
         system "clear"
@@ -26,13 +28,15 @@ class CLI
     
     
     def self.opening_prompt
+        # exit_music=fork{ system 'killall', 'afplay' }
         @@current_user = false
-        self.play_music
+        # self.play_music
         while !@@current_user
             @@current_user = PROMPT.select("What would you like to do?") do |menu|
                 menu.choice "Login", -> { User.login }
                 menu.choice "Signup", -> { User.create(User.signup) }
                 menu.choice "Exit", -> { exit }
+                
             end
         end
         @@current_user
@@ -247,7 +251,9 @@ puts"                    ██████
 ░░░░░░░░░░░░░░░░░░                                                                          
 ".red
 end
+
 end
+
 # class CLI
 
 #     def start
