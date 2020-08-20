@@ -58,22 +58,47 @@ class UserRecipe < ActiveRecord::Base
     puts
 
 
+
     extended_ing_array=ele.info_json["extendedIngredients"]
 
     extended_ing_array.each do |ele| 
         puts ele["originalString"].light_cyan
     end
     
-    binding.pry
+   puts 
 
-    ele.info_json['analyzedInstructions'][0]['step'].each do |step|
+    ele.info_json['analyzedInstructions'][0]['steps'].each do |step|
         puts "Step #{step['number']}.".blue
         puts "     #{step['step']}".yellow
-        binding.pry
+        
+    end
+    puts
+    puts
+    puts
+    puts
+    self.return_rating(ele.id)
+
+    sleep(3)
+    puts
+    puts
+    puts 
+
+    CLI.welcome_nav_bar
+
+       
     end
 
-
-        binding.pry
-    end
-
+    def self.return_rating(id)
+       user_recipe_value=self.all.select do |saved_recipe|
+            saved_recipe.recipe_id == id
+            end
+            user_recipe_value
+            puts "You've made this #{user_recipe_value[0].times_made} times".cyan
+            puts "The last time you made this was #{user_recipe_value[0].last_time_made}".cyan
+            puts "You previously rated this recipe as".cyan
+            puts  "#{user_recipe_value[0].star_rating} stars".white
+            puts "and said:".cyan
+            puts "#{user_recipe_value[0].review}".white
+        end
+    
 end
