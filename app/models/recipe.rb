@@ -12,6 +12,7 @@
 #  price           :float
 #
 class Recipe < ActiveRecord::Base
+    self.primary_key = :spoonacular_id
     has_many :ingredient_recipes
     has_many :ingredients, through: :ingredient_recipes
     has_many :user_recipes

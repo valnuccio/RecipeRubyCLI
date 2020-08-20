@@ -7,7 +7,7 @@
 #  recipe_id     :integer
 #
 class IngredientRecipe < ActiveRecord::Base
-belongs_to :ingredient
-belongs_to :recipe
+    belongs_to :ingredient
+    belongs_to :recipe
 
 end

@@ -6,10 +6,11 @@
 #  name :string
 #
 class Ingredient < ActiveRecord::Base
-has_many :user_ingredients
-has_many :ingredient_recipes
-has_many :recipes, through: :ingredient_recipes
-has_many :users, through: :user_ingredients
+    self.primary_key = :spoonacular_ingredient_id
+    has_many :user_ingredients
+    has_many :ingredient_recipes
+    has_many :recipes, through: :ingredient_recipes
+    has_many :users, through: :user_ingredients
 
 #flour
 #salt
