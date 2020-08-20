@@ -83,7 +83,7 @@ class API
         carbs = facts["carbs"]
         fat = facts["fat"]
         protein = facts["protein"]
-        all_info="\n    Calories: #{calories} \n    Carbs: #{carbs} \n    Fat: #{fat} \n     Protein: #{protein}"
+        all_info="\n    Calories: #{calories} \n    Carbs: #{carbs} \n    Fat: #{fat} \n    Protein: #{protein}"
     end
 
     def self.joke
