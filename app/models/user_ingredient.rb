@@ -15,11 +15,24 @@ class UserIngredient < ActiveRecord::Base
         PROMPT.select("Welcome to your pantry, what would you like to do?") do |menu|
             menu.choice "Add multiple items from top 21 most common ingredients to my pantry", -> {self.create_pantry}
             menu.choice "Add a SINGLE ingredient to my pantry", ->  {self.add_single_ingredient}
-            menu.choice "Choose items from my pantry to search for a recipe", -> {}
+            menu.choice "Choose items from my pantry to search for a recipe", -> { self.multi_search}
             menu.choice "View my pantry", -> {self.view_pantry}
             menu.choice "Return to Main Menu", -> {CLI.welcome_nav_bar}
             menu.choice "Exit", -> {exit}
         end
+    end
+
+    def self.multi_search
+        CLI.current_user.reload
+        pantry = CLI.current_user.ingredients.map(&:name)
+        
+        listed = PROMPT.multi_select("You have added the following item(s):", pantry, per_page: pantry.length)
+        if listed.length == 0
+            puts "Whoops, you didn't slect anything try again".white.on_red.bold
+            return self.multi_search
+        end
+        CLI.read_recipe(API.pantry_search(listed.join(", ")))
+       
     end
 
 

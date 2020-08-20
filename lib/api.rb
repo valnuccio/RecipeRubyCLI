@@ -39,7 +39,19 @@ class API
         get_recipe_id = PROMPT.select("What looks good?", choices, per_page:10)
         self.read_recipe(get_recipe_id)
     end
+ 
+    def self.pantry_search(ingredient)
+        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?ingredients=#{ingredient}")
+        found_recipes = api_call(url)
+        choices = found_recipes.map {|choice| 
+        {">>> #{choice['title'].red}": choice["id"] }}
+        get_recipe_id = PROMPT.select("What looks good? Displaying Top 5 Recipes w/ #{ingredient}", choices, per_page:5)
+        # self.read_recipe(get_recipe_id)
+        self.read_recipe(get_recipe_id)
+    end
 
+    
+    
     def self.search_ingredient
         ingredient = PROMPT.ask("Enter Ingredient(s) Do You Wish to Include >> ")
         url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?ingredients=#{ingredient}")
