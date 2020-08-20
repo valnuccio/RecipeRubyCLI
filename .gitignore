@@ -2,3 +2,5 @@
 /config/api.env
 /config/.env
 /config/keys.rb
+/db/recipe_ruby.db
+/image.png
