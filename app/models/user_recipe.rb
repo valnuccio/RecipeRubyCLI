@@ -32,4 +32,48 @@ class UserRecipe < ActiveRecord::Base
             menu.choice "Just browsing", false
           end
     end
+
+       
+    def self.view_recipe_book
+        recipe_array= CLI.current_user.recipes.map do |ele|
+                # x=ele.print_recipe_book_entry
+                {name: ele[:title], value: ele}
+                end
+        returned_ele = PROMPT.select("Choose your destiny?", recipe_array, per_page:10)
+        self.print_recipe_book_entry(returned_ele)
+     end
+
+
+    def self.print_recipe_book_entry(ele)
+        system "clear"
+    # Image.new(ele.photo_url)
+    puts ele.title.red  #ASCII HERE
+    puts ele.summary.green
+    puts
+    puts "Ready in " + "#{ele.minutes_to_make}".red
+    puts "Servings " + "#{ele.servings}".red
+    puts "Price per Serving " + "#{ele.price}".red
+    puts
+    puts "Nutrition Facts: #{ele.nutrition_facts.red}"
+    puts
+
+
+    extended_ing_array=ele.info_json["extendedIngredients"]
+
+    extended_ing_array.each do |ele| 
+        puts ele["originalString"].light_cyan
+    end
+    
+    binding.pry
+
+    ele.info_json['analyzedInstructions'][0]['step'].each do |step|
+        puts "Step #{step['number']}.".blue
+        puts "     #{step['step']}".yellow
+        binding.pry
+    end
+
+
+        binding.pry
+    end
+
 end

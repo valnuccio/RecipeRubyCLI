@@ -67,7 +67,7 @@ class User < ActiveRecord::Base
                 return CLI.welcome_nav_bar
             end
         else
-
+            UserIngredient.pantry_menu
         end
     end
 

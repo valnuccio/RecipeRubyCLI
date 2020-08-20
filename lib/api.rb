@@ -13,6 +13,21 @@ class API
         JSON.parse(response.read_body)
     end
 
+    def self.api_post(url, ingredient)
+                
+        http = Net::HTTP.new(url.host, url.port)
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+        request = Net::HTTP::Post.new(url)
+        request["x-rapidapi-host"] = HOST
+        request["x-rapidapi-key"] = KEY
+        request["content-type"] = 'application/x-www-form-urlencoded'
+        request.body = "ingredientList=#{ingredient}"
+        response = http.request(request)
+        JSON.parse(response.read_body)
+    end
+
     def self.search
         recipe = PROMPT.ask("What would you like to search for? >> ")
         url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=#{recipe}")
@@ -77,4 +92,8 @@ class API
         
     end
 
+    def self.find_ingredient(name)
+        url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/parseIngredients")
+        self.api_post(url,name)
+    end
 end

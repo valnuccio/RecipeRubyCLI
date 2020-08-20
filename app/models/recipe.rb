@@ -13,6 +13,7 @@
 #
 class Recipe < ActiveRecord::Base
     self.primary_key = :spoonacular_id
+    serialize :directions, Array
     has_many :ingredient_recipes
     has_many :ingredients, through: :ingredient_recipes
     has_many :user_recipes

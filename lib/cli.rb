@@ -40,7 +40,7 @@ class CLI
             menu.choice "Search for new recipes", -> { read_recipe(API.search) }
             menu.choice "Search for recipes by ingredients", -> { read_recipe(API.search_ingredient)}
             menu.choice "Check out our pantry", -> { User.pantry  }
-            menu.choice "View Recipe Book", -> {  }
+            menu.choice "View Recipe Book", -> {UserRecipe.view_recipe_book}
             menu.choice "Random Recipe Generator", -> {read_recipe(API.random_recipe)}
             menu.choice "Random Food Joke", -> { API.joke }
             menu.choice "Exit", -> { exit }
@@ -117,6 +117,12 @@ class CLI
     end
 
    
+    # def self.view_recipe_book
+    #     self.current_user.user_recipes.each do |ele|
+    #         binding.pry 
+    #     end
+
+    # end
 
 
     def self.greeting
