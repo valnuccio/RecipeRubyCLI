@@ -129,7 +129,7 @@ class CLI
             puts
             a2 = nutrition_facts
             puts
-            ingredient_explanation = ("-             Ingredient List: (" + "WHITE".white + " means we have it " + "LIGHT BLUE".light_cyan + " means you have grocery shopping to do)")
+            ingredient_explanation = ("-".black + "               Ingredient List: (" + "WHITE".white + " means we have it " + "LIGHT BLUE".light_cyan + " means you have grocery shopping to do)")
                 
             CLI.centered(ingredient_explanation)
             puts
