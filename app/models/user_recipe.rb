@@ -79,10 +79,10 @@ class UserRecipe < ActiveRecord::Base
         ingredient_explanation = ("-             Ingredient List: (" + "WHITE".white + " means we have it " + "LIGHT BLUE".light_cyan + " means you have grocery shopping to do)")
         CLI.centered(ingredient_explanation)
 
-
+        
         needs = []
         all_ingredients = []
-
+            
         ele.info_json["extendedIngredients"].each do |ingredient| 
             
             if UserIngredient.find_by(user_id: CLI.current_user.id, ingredient_id: ingredient["id"])
