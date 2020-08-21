@@ -12,7 +12,7 @@ class CLI
     end
 
     def self.play_music
-        pid = fork {exec 'afplay', "lib/GBBO_3.mp3"}
+        pid = fork {exec 'afplay', "lib/GBBO_4.mp3"}
     end
 
     
