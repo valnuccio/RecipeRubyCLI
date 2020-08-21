@@ -55,8 +55,8 @@ class UserRecipe < ActiveRecord::Base
             {name: ur_instance[:title], value: ur_instance}
         end
         community_recipes = PROMPT.select("Which would you like to see?", returned_instances_array, per_page:10)
-        binding.pry
-        CLI.read_recipe(community_recipes.info_json)
+        new_json = API.read_recipe(community_recipes.spoonacular_id)
+        CLI.read_recipe(new_json)
     
      end
 
