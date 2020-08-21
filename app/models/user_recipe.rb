@@ -111,7 +111,9 @@ class UserRecipe < ActiveRecord::Base
         puts "You need to go buy: " + needs.join(", ").light_cyan.bold + "."
         puts
         found_rating = UserRecipe.find_by(recipe_id: ele.id, user_id: CLI.current_user.id)
+        found_rating
         self.return_rating(found_rating.id)
+
         self.update_made_and_review(found_rating.id)
         
         sleep(0.5)
@@ -127,7 +129,8 @@ class UserRecipe < ActiveRecord::Base
     end
 
     def self.return_rating(id)
-       user_recipe_instance= UserRecipe.find(id)
+       user_recipe_instance = UserRecipe.find(id)
+       if user_recipe_instance.times_made != nil
        user_recipe_instance
        puts "You've made this".cyan
        puts "#{user_recipe_instance.times_made} times".white
@@ -137,6 +140,9 @@ class UserRecipe < ActiveRecord::Base
        puts  "#{user_recipe_instance.star_rating} stars".white
        puts "and said:".cyan
        puts "#{user_recipe_instance.review}".white
+       else
+        puts "You haven't made this one yet! Give it a try today!"
+       end
     end
     
     
@@ -144,14 +150,19 @@ class UserRecipe < ActiveRecord::Base
         user_recipe_instance= UserRecipe.find(id)
         if made?
             user_recipe_instance.last_time_made=Date.today
-            user_recipe_instance.increment!(:times_made, by = 1)     
+            user_recipe_instance.increment!(:times_made, by = 1)  
+            if update_review?
+                star_review=PROMPT.slider("Rating", max: 5, step: 1, symbols: {bullet: "✭"})
+                written_review=PROMPT.ask("Tell us what you thought!")
+                user_recipe_instance.update(star_rating: star_review, review: written_review)
+            end 
         end
         
-        if update_review?
-            star_review=PROMPT.slider("Rating", max: 5, step: 1, symbols: {bullet: "✭"})
-            written_review=PROMPT.ask("Tell us what you thought!")
-            user_recipe_instance.update(star_rating: star_review, review: written_review)
-        end
+        # if update_review?
+        #     star_review=PROMPT.slider("Rating", max: 5, step: 1, symbols: {bullet: "✭"})
+        #     written_review=PROMPT.ask("Tell us what you thought!")
+        #     user_recipe_instance.update(star_rating: star_review, review: written_review)
+        # end
     end
 
 
