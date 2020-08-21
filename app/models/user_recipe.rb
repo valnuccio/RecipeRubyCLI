@@ -35,16 +35,34 @@ class UserRecipe < ActiveRecord::Base
 
        
     def self.view_recipe_book
+        if CLI.current_user.recipes.length == 0
+            PROMPT.select("You don't seem to have any recipes saved! What would you like to do?") do |menu|
+                menu.choice "Search for new recipes to add to my book!", -> {CLI.read_recipe(API.search)}
+                menu.choice "Check out recipes others have saved", -> {self.community_recipes}
+                menu.choice "Return to Main Menu", -> {CLI.welcome_nav_bar}
+            end
+        end
         recipe_array= CLI.current_user.recipes.map do |ele|
                 # x=ele.print_recipe_book_entry
                 {name: ele[:title], value: ele}
                 end
-        returned_ele = PROMPT.select("What would you like to see?", recipe_array, per_page:10)
+        returned_ele = PROMPT.select("Which would you like to see?", recipe_array, per_page:10)
         self.print_recipe_book_entry(returned_ele)
+     end
+
+     def self.community_recipes
+        returned_instances_array = UserRecipe.all.map(&:recipe).map do |ur_instance|
+            {name: ur_instance[:title], value: ur_instance}
+        end
+        community_recipes = PROMPT.select("Which would you like to see?", returned_instances_array, per_page:10)
+        binding.pry
+        CLI.read_recipe(community_recipes.info_json)
+    
      end
 
 
     def self.print_recipe_book_entry(ele)
+        
         system ("clear")
         # Image.new(ele.photo_url)
         CLI.centered(ele.title, true)
