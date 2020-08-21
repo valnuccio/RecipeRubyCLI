@@ -89,6 +89,7 @@ class API
     def self.joke
         url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/food/jokes/random")
         puts self.api_call(url)["text"].light_cyan
+        sleep(4)
         CLI.welcome_nav_bar
     end
 

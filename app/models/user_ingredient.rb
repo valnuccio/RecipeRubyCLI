@@ -38,8 +38,9 @@ class UserIngredient < ActiveRecord::Base
 
     def self.create_pantry
         system ("clear")
-        a = Artii::Base.new :font => 'slant'
-        a.asciify("Let's make some food choices").red
+        
+        # CLI.centered(" Let's  make  some  food  choices ", true)
+        self.pantry_title
         listed = choices = PROMPT.multi_select("You have added the following item(s):", per_page: 21) do |menu|
             menu.choice "Onions", -> { UserIngredient.find_or_create_by(user_id: CLI.current_user.id, ingredient_id: 11282) }
             menu.choice "Rice",-> { UserIngredient.find_or_create_by(user_id: CLI.current_user.id, ingredient_id: 20444) }
@@ -79,12 +80,15 @@ class UserIngredient < ActiveRecord::Base
     end
 
     def self.view_pantry
+        system ("clear")
+        self.pantry_title
         puts "You have the following:"
         CLI.current_user.reload
         CLI.current_user.ingredients.each_with_index do |ingredient, i|
             puts "      #{(i+1).to_s.red}. #{ingredient.name.capitalize.green}"
         end
-        sleep(1)
+        puts
+        puts
         self.pantry_menu
     end
 
@@ -111,8 +115,19 @@ class UserIngredient < ActiveRecord::Base
         sleep(1)
         self.pantry_menu
     end
-    
-   
+
+    def self.pantry_title
+        title = "██████╗ ██╗   ██╗██████╗ ██╗   ██╗    ██████╗  █████╗ ███╗   ██╗████████╗██████╗ ██╗   ██╗
+██╔══██╗██║   ██║██╔══██╗╚██╗ ██╔╝    ██╔══██╗██╔══██╗████╗  ██║╚══██╔══╝██╔══██╗╚██╗ ██╔╝
+██████╔╝██║   ██║██████╔╝ ╚████╔╝     ██████╔╝███████║██╔██╗ ██║   ██║   ██████╔╝ ╚████╔╝ 
+██╔══██╗██║   ██║██╔══██╗  ╚██╔╝      ██╔═══╝ ██╔══██║██║╚██╗██║   ██║   ██╔══██╗  ╚██╔╝  
+██║  ██║╚██████╔╝██████╔╝   ██║       ██║     ██║  ██║██║ ╚████║   ██║   ██║  ██║   ██║   
+╚═╝  ╚═╝ ╚═════╝ ╚═════╝    ╚═╝       ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   
+                                                                                          ".red
+
+        CLI.centered(title)
+
+    end
 end
         
     

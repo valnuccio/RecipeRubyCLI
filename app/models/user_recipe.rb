@@ -47,27 +47,44 @@ class UserRecipe < ActiveRecord::Base
     def self.print_recipe_book_entry(ele)
         system ("clear")
         # Image.new(ele.photo_url)
-        puts ele.title.red  #ASCII HERE
+        CLI.centered(ele.title, true)
         puts ele.summary.green
         puts
-        puts "Ready in " + "#{ele.minutes_to_make}".red
-        puts "Servings " + "#{ele.servings}".red
-        puts "Price per Serving " + "#{ele.price}".red
-        puts
-        puts "Nutrition Facts: #{ele.nutrition_facts.red}"
-        puts
-
-
-
-        extended_ing_array = ele.info_json["extendedIngredients"]
-
-        extended_ing_array.each do |ingredient| 
-            puts ingredient["originalString"].light_cyan
-        end
         
-        puts 
+        a1 = "Ready in " + "#{ele.minutes_to_make}".red 
+        b1 = "Servings " + "#{ele.servings}".red
+        c1 = "Price per Serving " + "#{ele.price}".red
+        first_column = a1+ "\n" + b1 + "\n" + c1
+        puts
+        a2 = ele.nutrition_facts
+        puts
+        ingredient_explanation = ("-             Ingredient List: (" + "WHITE".white + " means we have it " + "LIGHT BLUE".light_cyan + " means you have grocery shopping to do)")
+        CLI.centered(ingredient_explanation)
 
-        ele.info_json['analyzedInstructions'][0]['steps'].each do |step|
+
+        needs = []
+        all_ingredients = []
+
+        ele.info_json["extendedIngredients"].each do |ingredient| 
+            
+            if UserIngredient.find_by(user_id: CLI.current_user.id, ingredient_id: ingredient["id"])
+                all_ingredients << ingredient["originalString"].white
+            else
+                all_ingredients << ingredient["originalString"].light_cyan
+                needs << ingredient["name"]
+            end
+        end
+        table = TTY::Table.new ['Info'.bold.magenta,'Nutrition Facts'.bold.magenta, 'Ingredients'.bold.magenta], [[first_column, a2, all_ingredients.join("\n")]]
+        
+        CLI.centered(table.render(:ascii, multiline: true))
+        puts 
+        begin
+            directions =ele.info_json['analyzedInstructions'][0]['steps']
+        rescue
+            directions = [{'number'=> 1, 'step'=> "NO INSTRUCTIONS PROVIDED"}]
+        end
+
+        directions.each do |step|
             puts "Step #{step['number']}.".blue
             puts "     #{step['step']}".yellow
             

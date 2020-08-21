@@ -21,13 +21,12 @@ class CLI
         self.nav_bar_greeting
         @@current_user = self.opening_prompt
         self.welcome_nav_bar
-        
     end
     
     def self.exit_and_kill_music
-    pid = fork{ system 'killall', 'afplay' }
-    sleep(0.5)
-    exit
+        pid = fork{ system 'killall', 'afplay' }
+        sleep(0.5)
+        exit
     end
 
     
@@ -62,7 +61,10 @@ class CLI
             //__.....----~~~~._\ | /_.~~~~----.....__\\      ██╔══██╗██╔══╝░░██║░░██╗██║██╔═══╝░██╔══╝░░  ██╔══██╗██║░░░██║██╔══██╗░░╚██╔╝░░
           ====================\\|//====================     ██║░░██║███████╗╚█████╔╝██║██║░░░░░███████╗  ██║░░██║╚██████╔╝██████╦╝░░░██║░░░
                              `---`                         ╚═╝░░╚═╝╚══════╝░╚════╝░╚═╝╚═╝░░░░░╚══════╝  ╚═╝░░╚═╝░╚═════╝░╚═════╝░░░░╚═╝░░░®".red
-        #add fun food fact
+        puts
+        puts "Fun food fact:"
+        puts
+        puts API.fact.light_cyan
         puts
         puts
         puts
@@ -84,13 +86,6 @@ class CLI
 
     def self.read_recipe(recipe)
         #(recipe passed in is the format received from JSON)
-        ## MAYBE FIX WITH A BEGIN AND RESCUE!!!!!!
-        #puts "
-        
-       
-       
-       
-        
         
         begin
             title = recipe['title']
@@ -101,11 +96,13 @@ class CLI
             recipe_spoonacular_id = recipe['id']
             nutrition_facts = API.get_recipe_nutrition_facts(recipe_spoonacular_id)
             price = API.get_recipe_price(recipe_spoonacular_id)
+        
             begin
                 directions = recipe['analyzedInstructions'][0]['steps']
             rescue
                 directions = [{'number'=> 1, 'step'=> "NO INSTRUCTIONS PROVIDED"}]
             end
+        
             current_recipe = Recipe.find_or_create_by(spoonacular_id: recipe_spoonacular_id)
             
             current_recipe.update(title: title,
@@ -120,37 +117,49 @@ class CLI
             
 
             Image.new(photo_url)
-            puts title.red  #ASCII HERE
+
+            CLI.centered(title, true)
+            
             puts summary.green
+            
+            a1 = "Ready in " + "#{time}".red 
+            b1 = "Servings " + "#{servings}".red
+            c1 = "Price per Serving " + "#{price}".red
+            first_column = a1+ "\n" + b1 + "\n" + c1
             puts
-            puts "Ready in " + "#{time}".red
-            puts "Servings " + "#{servings}".red
-            puts "Price per Serving " + "#{price}".red
+            a2 = nutrition_facts
             puts
-            puts "Nutrition Facts: #{nutrition_facts.red}"
+            ingredient_explanation = ("-             Ingredient List: (" + "WHITE".white + " means we have it " + "LIGHT BLUE".light_cyan + " means you have grocery shopping to do)")
+                
+            CLI.centered(ingredient_explanation)
             puts
-            puts "Ingredient List: (" + "WHITE".white + " means we have it " + "LIGHT BLUE".light_cyan + " means you have grocery shopping to do)"
-            puts
+            
             needs = []
+            all_ingredients = []
+
             recipe["extendedIngredients"].each do |ele| 
                     current_ingredient = Ingredient.find_or_create_by(spoonacular_ingredient_id: ele["id"])
                     current_ingredient.update(name: ele["name"])
                     IngredientRecipe.find_or_create_by(ingredient_id: ele["id"], recipe_id: current_recipe.spoonacular_id)
             
                     if UserIngredient.find_by(user_id: CLI.current_user.id, ingredient_id: ele["id"])
-                        puts ele["originalString"].white
+                        all_ingredients << ele["originalString"].white
                     else
-                        puts ele["originalString"].light_cyan
+                        all_ingredients << ele["originalString"].light_cyan
                         needs << ele["name"]
                     end
             end
             
+            table = TTY::Table.new ['Info'.bold.magenta,'Nutrition Facts'.bold.magenta, 'Ingredients'.bold.magenta], [[first_column, a2, all_ingredients.join("\n")]]
+                
+            CLI.centered(table.render(:ascii, multiline: true))
             
             
             directions.each do |step|
                 puts "Step #{step['number']}.".blue
                 puts "     #{step['step']}".yellow
             end
+            puts
             puts "You need to go buy: " + needs.join(", ").light_cyan.bold + "."
             puts
             puts
@@ -163,7 +172,7 @@ class CLI
             puts "Something went wrong, returning to main menu".white.on_red
             sleep(2)
             return self.welcome_nav_bar
-            ### SAVED RECIPE DIFFERENT FUNCTION?!?!?!?!
+            
         end
 
     end
@@ -197,6 +206,30 @@ class CLI
     #     puts
     # end
 
+    def self.centered(to_center, asciied = false)
+        width = TermInfo.screen_size[1]
+        
+        if to_center.is_a? String
+            texted = [to_center]
+        end
+        if asciied
+            a = Artii::Base.new
+            texted = a.asciify ("#{to_center}")
+        else
+            texted = to_center
+        end
+        
+        print_line = (texted.split("\n")[0].strip.length)
+        padding = (width-print_line)/2
+        if padding < 5
+            return puts texted.red
+        end
+        if asciied
+            texted.split("\n").each { |line| puts " " * padding + line.bold.red}
+        else
+            texted.split("\n").each { |line| puts " " * padding + line}
+        end
+    end
 
 
 
@@ -257,27 +290,3 @@ puts"                    ██████
 end
 
 end
-
-# class CLI
-
-#     def start
-#         puts "Welcome to the Pet Adoption CLI!"
-#         user = User.login 
-
-#         # user.adopt_animal
-#         # Animal.list_animals
-
-
-#         # we should refactor this! it works now! 
-#         puts "Which animal would you like to adopt?"
-#         Animal.all.each do |animal|
-#             puts animal[:name]
-#         end
-#         animal_name = gets.chomp
-#         UserAnimal.create(user: user, animal: Animal.find_by(name: animal_name))
-#         binding.pry 
-#     end
-
-    
-# end
-

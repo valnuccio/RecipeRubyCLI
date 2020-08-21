@@ -21,3 +21,4 @@ gem "net-http"
 gem "json"
 gem "dotenv"
 gem 'nokogiri'
+gem 'tty-table'
