@@ -35,6 +35,8 @@ class UserRecipe < ActiveRecord::Base
 
        
     def self.view_recipe_book
+        CLI.current_user.reload
+
         if CLI.current_user.recipes.length == 0
             PROMPT.select("You don't seem to have any recipes saved! What would you like to do?") do |menu|
                 menu.choice "Search for new recipes to add to my book!", -> {CLI.read_recipe(API.search)}
