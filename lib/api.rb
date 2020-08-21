@@ -94,6 +94,7 @@ class API
     end
 
     def self.random_recipe
+        system ("clear")
         url = URI("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/random?number=1")
         food_outer_hash = self.api_call(url)
         food_outer_hash["recipes"][0]

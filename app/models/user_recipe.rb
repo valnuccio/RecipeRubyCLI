@@ -107,13 +107,14 @@ class UserRecipe < ActiveRecord::Base
             puts "     #{step['step']}".yellow
             
         end
-
+        puts 
+        puts "You need to go buy: " + needs.join(", ").light_cyan.bold + "."
         puts
         found_rating = UserRecipe.find_by(recipe_id: ele.id, user_id: CLI.current_user.id)
         self.return_rating(found_rating.id)
         self.update_made_and_review(found_rating.id)
         
-        sleep(3)
+        sleep(0.5)
         puts
     
 
