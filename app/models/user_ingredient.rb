@@ -29,7 +29,7 @@ class UserIngredient < ActiveRecord::Base
         
         listed = PROMPT.multi_select("You have added the following item(s):", pantry, per_page: pantry.length)
         if listed.length == 0
-            puts "Whoops, you didn't slect anything try again".white.on_red.bold
+            puts "Whoops, you didn't select anything try again".white.on_red.bold
             return self.multi_search
         end
         CLI.read_recipe(API.pantry_search(listed.join(", ")))
@@ -98,6 +98,8 @@ class UserIngredient < ActiveRecord::Base
         self.add_to_pantry(to_add)
         puts "Added ".green + name.upcase.red + " to your pantry!".green
         sleep(1)
+        system ("clear")
+        self.pantry_title
         self.pantry_menu
     end
 
@@ -114,6 +116,8 @@ class UserIngredient < ActiveRecord::Base
         current_ingredient.update(name: name)
         UserIngredient.create(user_id: CLI.current_user.id, ingredient_id: spoonacular_ingredient_id)
         sleep(1)
+        system ("clear")
+        self.pantry_title
         self.pantry_menu
     end
 
@@ -124,7 +128,7 @@ class UserIngredient < ActiveRecord::Base
         end
         ingredient_ids_to_destroy = PROMPT.multi_select("You have added the following item(s):", pantry, per_page: pantry.length)
         if ingredient_ids_to_destroy.length == 0
-            puts "You didn't slect anything".white.on_red.bold
+            puts "You didn't select anything".white.on_red.bold
             return self.pantry_menu
         end
         
@@ -133,6 +137,8 @@ class UserIngredient < ActiveRecord::Base
             found_instance.destroy
         end
 
+        system ("clear")
+        self.pantry_title
         CLI.current_user.reload
         return self.pantry_menu
     end
